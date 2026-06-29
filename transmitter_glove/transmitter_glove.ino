@@ -2,12 +2,9 @@
 #include <espnow.h>
 #include <Wire.h>
 #include <MPU6050.h>
-
-// Librerias necesarias para la pantalla OLED
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
 
-// Configuracion de la resolucion de la pantalla OLED (128x64 pixeles)
 #define SCREEN_WIDTH 128
 #define SCREEN_HEIGHT 64
 #define OLED_RESET    -1 // Usamos -1 porque compartimos el reset con el ESP8266
@@ -16,7 +13,7 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 MPU6050 mpu;
 int16_t ax, ay, az, gx, gy, gz;
 
-// Tu direccion MAC (Ya actualizada con los valores de tu receptor)
+// Actualiza tu direccion MAC:
 uint8_t receiverAddress[] = {0x24, 0xD7, 0xEB, 0xEF, 0xA3, 0xC8}; 
 
 // Estructura para enviar el dato
@@ -26,26 +23,18 @@ typedef struct struct_message {
 
 struct_message msg;
 
-// Variable para rastrear el último gesto y evitar actualizar la pantalla innecesariamente
 char ultimoGesto = ' ';
 
-// =========================================================================
-// Función dedicada a dibujar los graficos y el texto en la pantalla OLED
-// =========================================================================
 void actualizarPantalla(char gesto) {
-  display.clearDisplay(); // Limpia el frame anterior
+  display.clearDisplay();
 
-  // Configura el texto pequeño superior
   display.setTextSize(1);
   display.setTextColor(SSD1306_WHITE);
   display.setCursor(0, 5);
   display.print("Gesto Activo:");
-
-  // Configura el texto grande para la instruccion
   display.setTextSize(2);
   display.setCursor(0, 25);
 
-  // Evaluamos la letra enviada para dibujar la animacion correspondiente
   switch (gesto) {
     case 'F': // Adelante
       display.print("ADELANTE");
@@ -82,24 +71,21 @@ void actualizarPantalla(char gesto) {
       break;
   }
   
-  display.display(); // Proyecta el grafico finalmente en la pantalla fisica
+  display.display();
 }
 // =========================================================================
 
 void setup() {
-  Serial.begin(115200);
+  Serial.begin(115200); //ajusta los baudios
   
-  // SOLUCIÓN: Definimos explícitamente los pines D2 (SDA) y D1 (SCL) según tu imagen
+  // Definimos explicitamente los pines D2 (SDA) y D1 (SCL)
   Wire.begin(D2, D1); 
-  
-  // Damos un tiempo para que la corriente se estabilice en ambos modulos
+
   delay(500); 
 
-  // 1. Iniciar PRIMERO el Giroscopio (es mas sensible a los cambios del bus)
   mpu.initialize();
   bool mpuConectado = mpu.testConnection();
 
-  // 2. Iniciar Pantalla OLED en la direccion I2C (0x3C)
   if(!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) { 
     Serial.println(F("OLED no encontrada. Revisa las conexiones."));
   } else {
@@ -122,7 +108,7 @@ void setup() {
         yield(); // El comando yield() evita que el ESP8266 se reinicie mostrando letras raras
       }
     } else {
-      // Si ambos están bien, muestra un mensaje de bienvenida
+      // Si ambos estan bien, muestra un mensaje de bienvenida
       display.setCursor(15, 20);
       display.setTextSize(2);
       display.print("Iniciando");
@@ -131,7 +117,7 @@ void setup() {
     }
   }
 
-  // 3. Iniciar el WiFi para ESP-NOW
+  // Iniciar el WiFi para ESP-NOW
   WiFi.mode(WIFI_STA);
   WiFi.disconnect();
 
@@ -140,14 +126,13 @@ void setup() {
     return;
   }
 
-  // 4. Registrar emparejamiento con el carro
+  // Registrar emparejamiento con el carro
   esp_now_set_self_role(ESP_NOW_ROLE_CONTROLLER);
   esp_now_add_peer(receiverAddress, ESP_NOW_ROLE_SLAVE, 1, NULL, 0);
 }
 
 void loop() {
-  // Leer los valores fisicos del giroscopio
-  mpu.getMotion6(&ax, &ay, &az, &gx, &gy, &gz);
+  mpu.getMotion6(&ax, &ay, &az, &gx, &gy, &gz);   // Leer los valores fisicos del giroscopio
 
   // Detectar la inclinacion
   if (ax > 10000)       msg.gesture = 'F';  // Forward
@@ -156,12 +141,9 @@ void loop() {
   else if (ay < -10000) msg.gesture = 'R';  // Right
   else                  msg.gesture = 'S';  // Stop
 
-  // Mandar la informacion inalambrica al carro
   esp_now_send(receiverAddress, (uint8_t *)&msg, sizeof(msg));
 
-  // OPTIMIZACIÓN DE VELOCIDAD:
-  // Solo actualiza la pantalla si el gesto ha cambiado.
-  // Esto quita el "lag" inmenso de redibujar la pantalla en cada ciclo.
+  // OPTIMIZACION DE VELOCIDAD: Solo actualiza la pantalla si el gesto ha cambiado.
   if (msg.gesture != ultimoGesto) {
     actualizarPantalla(msg.gesture);
     ultimoGesto = msg.gesture;
@@ -170,7 +152,5 @@ void loop() {
   Serial.print("Gesture sent: ");
   Serial.println(msg.gesture);
 
-  // Reducimos el delay de 200ms a 20ms para tener una respuesta en TIEMPO REAL
-  // Enviará datos 50 veces por segundo en lugar de solo 4.
   delay(20); 
 }
