@@ -1,0 +1,34 @@
+# --- Archivos de LaTeX ---
+*.aux
+*.log
+*.toc
+*.out
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+*.nav
+*.snm
+*.vrb
+*.lof
+*.lot
+
+# --- Archivos de compilación ---
+*.dvi
+*.ps
+
+# --- Archivos de Arduino / PlatformIO ---
+*.hex
+*.elf
+*.bin
+.build/
+.pio/
+
+# --- Archivos de entorno virtual Python ---
+venv/
+__pycache__/
+*.pyc
+*.pyo
+
+# --- Archivos del sistema ---
+.DS_Store
+Thumbs.db
