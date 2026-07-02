@@ -86,4 +86,44 @@ El sensor lee los ejes de inclinación y los traduce a los siguientes comandos d
  ┃ ┗ 📜 main.tex                   # Código fuente LaTeX del informe formal
  ┣ 📂 output
  ┃ ┗ 📜 informe.pdf                # (Directorio de salida para la documentación)
- ┗ 📜 requirements.txt             # Dependencias de
+ ┗ 📜 requirements.txt             # Dependencias de de Python para los tests
+```
+
+## 🚀 Guía de Instalación y Uso
+### 1. Preparar el Entorno de Análisis (Opcional)
+Si deseas ejecutar los modelos computacionales en Python, instala las dependencias:
+Bash
+pip install -r requirements.txt
+### 2. Obtener la dirección MAC del Receptor
+Para que el guante sepa a qué vehículo hablarle, necesitas la dirección de red de la placa del carro.
+1.	Conecta por USB el ESP8266 que usarás en el vehículo.
+2.	Sube el código `code/get_mac_address/get_mac_address.ino`.
+3.	Abre el Monitor Serial a 115200 baudios y anota la dirección MAC impresa.
+### 3. Configurar el Transmisor (Guante)
+1.	Abre `code/transmitter_glove/transmitter_glove.ino`.
+2.	Busca la variable `receiverAddress[]` y actualízala con la MAC de tu vehículo:
+``` C++
+// Ejemplo:
+uint8_t receiverAddress[] = {0x24, 0xD7, 0xEB, 0xEF, 0xA3, 0xC8};
+```
+
+3.	Verifica las conexiones físicas I2C del MPU6050 y la OLED (`SDA: D2`, `SCL: D1`).
+4.	Sube el firmware a la placa del guante.
+### 4. Configurar el Receptor (Vehículo)
+1.	Abre `code/receiver_car/receiver_car.ino`.
+2.	Verifica que los pines declarados coincidan con el cableado físico hacia tu driver L298N:
+o	`IN1 = D1`
+o	`IN2 = D2`
+o	`IN3 = D3`
+o	`IN4 = D4`
+3.	Sube el firmware a la placa del vehículo.
+📊 Análisis y Gráficas de Rendimiento
+Puedes evaluar y visualizar la eficacia arquitectónica del código optimizado frente a un algoritmo tradicional corriendo los scripts de prueba ubicados en la carpeta `/test`:
+```Bash
+# Genera la comparativa de carga en el bus I2C
+python test/eficiencia_i2c.py
+
+# Genera el gráfico de latencia de ejecución
+python test/grafica_latencia_real.py
+```
+> **Nota: Las gráficas resultantes .png demuestran un incremento en la frecuencia de muestreo de hasta 10x y una reducción del 93% en el cuello de botella gráfico.**
