@@ -1,3 +1,10 @@
+# --- Entorno virtual Python ---
+.venv/
+venv/
+__pycache__/
+*.pyc
+*.pyo
+
 # --- Archivos de LaTeX ---
 *.aux
 *.log
@@ -13,6 +20,7 @@
 *.lot
 
 # --- Archivos de compilación ---
+*.pdf
 *.dvi
 *.ps
 
@@ -22,12 +30,6 @@
 *.bin
 .build/
 .pio/
-
-# --- Archivos de entorno virtual Python ---
-venv/
-__pycache__/
-*.pyc
-*.pyo
 
 # --- Archivos del sistema ---
 .DS_Store
