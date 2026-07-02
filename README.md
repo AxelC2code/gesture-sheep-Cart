@@ -126,4 +126,17 @@ python test/eficiencia_i2c.py
 # Genera el gráfico de latencia de ejecución
 python test/grafica_latencia_real.py
 ```
+
+## 📄 Documentación
+
+Puedes descargar el informe completo aquí:  
+[ESP_NOW_Gesture_Car.pdf](output/ESP_NOW_Gesture_Car.pdf)
+
+<p align="center">
+  <a href="output/ESP_NOW_Gesture_Car.pdf">
+    <img src="https://img.shields.io/badge/📄 Descargar%20PDF-blue" alt="Descargar PDF"/>
+  </a>
+</p>
+
+
 > **Nota: Las gráficas resultantes .png demuestran un incremento en la frecuencia de muestreo de hasta 10x y una reducción del 93% en el cuello de botella gráfico.**
