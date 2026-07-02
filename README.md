@@ -1,117 +1,89 @@
-# Gesture Controlled Car with ESP8266 & ESP-NOW
+<div align="center">
 
-Este proyecto implementa un vehículo robótico controlado por gestos de la mano. Utiliza dos microcontroladores ESP8266 que se comunican de forma directa y con baja latencia mediante el protocolo ESP-NOW, eliminando la necesidad de módulos de radio adicionales o routers Wi-Fi.
+# Gesture Controlled Car 
+### ESP8266 & ESP-NOW
 
-## Tecnologías y hardware utilizado
+![C++](https://img.shields.io/badge/C++-00599C?style=for-the-badge&logo=c%2B%2B&logoColor=white)
+![Arduino](https://img.shields.io/badge/Arduino-00979D?style=for-the-badge&logo=arduino&logoColor=white)
+![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![LaTeX](https://img.shields.io/badge/LaTeX-47A141?style=for-the-badge&logo=latex&logoColor=white)
 
-- Microcontroladores: 2x ESP8266 (NodeMCU / Wemos D1 Mini)
-- Sensores: MPU6050 (acelerómetro + giroscopio)
-- Visualización: pantalla OLED SSD1306 de 128x64 con interfaz I2C
-- Actuadores: driver L298N y 4 motores DC
-- Comunicación: ESP-NOW con direcciones MAC
+*Un vehículo robótico de alta maniobrabilidad controlado por gestos de la mano, con comunicación directa MAC a MAC y arquitectura anti-latencia.*
 
-## ¿Qué hace este proyecto?
+</div>
 
-El sistema está dividido en dos partes:
+---
 
-- Un transmisor montado en un guante, que detecta la inclinación de la mano y envía un gesto al vehículo.
-- Un receptor instalado en el carro, que interpreta el gesto y activa los motores correspondientes.
+## Sobre el Proyecto
 
-Los gestos reconocidos son:
+Este proyecto implementa un vehículo robótico controlado íntegramente por movimientos biomecánicos. Utiliza dos microcontroladores **ESP8266** que se comunican de forma directa y con latencia ultrabaja mediante el protocolo **ESP-NOW**, eliminando por completo la necesidad de módulos de radio adicionales (como NRF24L01) o routers Wi-Fi externos.
 
-- F: adelante
-- B: atrás
-- L: izquierda
-- R: derecha
-- S: stop
+El sistema se divide en dos nodos principales:
 
-## Estructura del repositorio
+1. **Transmisor (Guante):** Detecta la inclinación de la mano, procesa el vector de movimiento y envía la instrucción. Cuenta con retroalimentación visual OLED.  
+   <img src="src/modelo_guante.png" alt="Modelo del guante" width="300"/>
 
-- code/get_mac_address/get_mac_address.ino: utilidad para obtener la dirección MAC del ESP8266 receptor.
-- code/receiver_car/receiver_car.ino: firmware del vehículo, control de motores y sistema failsafe.
-- code/transmitter_glove/transmitter_glove.ino: firmware del transmisor, lectura del MPU6050, pantalla OLED y envío por ESP-NOW.
-- test/eficiencia_i2c.py: script para modelar la eficiencia del bus I2C y generar una gráfica de comparación.
-- test/grafica_latencia_real.py: script para simular y visualizar la mejora de latencia del código optimizado.
-- src/main.tex: fuente LaTeX para el informe o documentación del proyecto.
-- requirements.txt: dependencias de Python necesarias para los scripts de análisis.
-- output/: carpeta destinada al PDF generado.
+2. **Receptor (Vehículo):** Interpreta el gesto inalámbrico y acciona un sistema de tracción diferencial.  
+   <img src="src/modelo_vehiculo.png" alt="Modelo del vehículo" width="300"/>
 
-## Requisitos
 
-### Hardware
 
-- 2 ESP8266
-- MPU6050
-- OLED SSD1306
-- Driver L298N
-- 4 motores DC
-- Fuente de alimentación adecuada para el carro y guante
+---
 
-### Software
+## Características Destacadas
 
-- Arduino IDE
-- Librerías Arduino:
-  - ESP8266WiFi
-  - espnow
-  - Wire
-  - MPU6050
-  - Adafruit_GFX
-  - Adafruit_SSD1306
-- Python 3.x
+- **Baja Latencia (ESP-NOW)⚡:** Frecuencia de envío ajustada y comunicación síncrona para mantener un control mecánico fluido y en tiempo real.
+- **Optimización de Interfaz (I2C)🧠:** La pantalla OLED en el guante emplea un algoritmo asíncrono; solo se redibuja cuando cambia el gesto, liberando el 93% de la carga del procesador.
+- **Sistema Failsafe Integrado 🛡️:** Un "perro guardián" (watchdog) de software que detiene los motores instantáneamente si se pierde la comunicación por más de 500 ms, previniendo colisiones.
 
-Instala las dependencias de Python con:
+---
 
-```bash
-pip install -r requirements.txt
-```
+## 🛠️ Tecnologías y Hardware
 
-## Guía de instalación y uso
+### Hardware Principal
+| Componente | Descripción |
+| :--- | :--- |
+| **Microcontroladores** | 2x ESP8266 (NodeMCU / Wemos D1 Mini) |
+| **Sensores** | 1x MPU6050 (Acelerómetro + Giroscopio de 6 ejes) |
+| **Visualización** | 1x Pantalla OLED SSD1306 (128x64) I2C |
+| **Actuadores** | 1x Driver Puente H L298N + 4 Motores DC |
+| **Alimentación** | Baterías Li-ion 3.7V (Lógica) + 4x AA 1.5V (Potencia) |
 
-### Paso 1: obtener la dirección MAC del receptor
+### Software y Librerías
+- **Entorno:** Arduino IDE
+- **Librerías C++:** `ESP8266WiFi`, `espnow`, `Wire`, `MPU6050`, `Adafruit_GFX`, `Adafruit_SSD1306`
+- **Análisis de Datos:** Python 3.x (Matplotlib, Numpy)
 
-1. Conecta el ESP8266 que usarás en el vehículo.
-2. Sube el código de la carpeta code/get_mac_address.
-3. Abre el monitor serial a 115200 baudios y anota la dirección MAC que se imprima.
+---
 
-### Paso 2: configurar el transmisor (guante)
+## 🕹️ Gestos Reconocidos
 
-1. Abre el archivo code/transmitter_glove/transmitter_glove.ino.
-2. Reemplaza la variable receiverAddress[] con la dirección MAC obtenida en el paso anterior.
+El sensor lee los ejes de inclinación y los traduce a los siguientes comandos de conducción:
 
-```cpp
-uint8_t receiverAddress[] = {0x24, 0xD7, 0xEB, 0xEF, 0xA3, 0xC8};
-```
+* `F` ➔ **Adelante** (Inclinación frontal)
+* `B` ➔ **Atrás** (Inclinación hacia atrás)
+* `L` ➔ **Izquierda** (Inclinación lateral izquierda)
+* `R` ➔ **Derecha** (Inclinación lateral derecha)
+* `S` ➔ **Stop** (Posición neutra o reposo)
 
-3. Verifica las conexiones I2C:
-   - SDA: D2
-   - SCL: D1
+---
 
-4. Sube el firmware al ESP8266 transmisor.
+## 📂 Estructura del Repositorio
 
-### Paso 3: configurar el receptor (vehículo)
-
-1. Abre el archivo code/receiver_car/receiver_car.ino.
-2. Asegúrate de que los pines del L298N coincidan con la configuración actual:
-   - IN1 = D1
-   - IN2 = D2
-   - IN3 = D3
-   - IN4 = D4
-3. Sube el firmware al ESP8266 del vehículo.
-
-## Características destacadas
-
-- Baja latencia en la comunicación por ESP-NOW.
-- Pantalla OLED actualizada solo cuando cambia el gesto, reduciendo carga innecesaria en I2C.
-- Frecuencia de envío ajustada para mantener un control más fluido.
-- Failsafe que detiene el vehículo si se pierde la comunicación durante un tiempo determinado.
-
-## Análisis y gráficas
-
-Los scripts de la carpeta test permiten evaluar el rendimiento del sistema:
-
-```bash
-python test/eficiencia_i2c.py
-python test/grafica_latencia_real.py
-```
-
-Estos scripts generan gráficas que ayudan a comparar el comportamiento del sistema original y el sistema optimizado.
+```text
+📦 gesture-sheep-Cart
+ ┣ 📂 code
+ ┃ ┣ 📂 get_mac_address
+ ┃ ┃ ┗ 📜 get_mac_address.ino      # Utilidad para obtener la MAC del receptor
+ ┃ ┣ 📂 receiver_car
+ ┃ ┃ ┗ 📜 receiver_car.ino         # Firmware del vehículo y control L298N
+ ┃ ┗ 📂 transmitter_glove
+ ┃ ┃ ┗ 📜 transmitter_glove.ino    # Firmware del MPU6050, OLED y envío
+ ┣ 📂 test
+ ┃ ┣ 📜 eficiencia_i2c.py          # Script para modelar saturación I2C
+ ┃ ┗ 📜 grafica_latencia_real.py   # Simulación de respuesta y tiempo de ciclo
+ ┣ 📂 src
+ ┃ ┗ 📜 main.tex                   # Código fuente LaTeX del informe formal
+ ┣ 📂 output
+ ┃ ┗ 📜 informe.pdf                # (Directorio de salida para la documentación)
+ ┗ 📜 requirements.txt             # Dependencias de
