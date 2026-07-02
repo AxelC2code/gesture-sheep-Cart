@@ -38,7 +38,7 @@ El sistema se divide en dos nodos principales:
 
 ---
 
-## 🛠️ Tecnologías y Hardware
+## Tecnologías y Hardware
 
 ### Hardware Principal
 | Componente | Descripción |
@@ -56,7 +56,7 @@ El sistema se divide en dos nodos principales:
 
 ---
 
-## 🕹️ Gestos Reconocidos
+## Gestos Reconocidos
 
 El sensor lee los ejes de inclinación y los traduce a los siguientes comandos de conducción:
 
@@ -68,7 +68,7 @@ El sensor lee los ejes de inclinación y los traduce a los siguientes comandos d
 
 ---
 
-## 📂 Estructura del Repositorio
+## Estructura del Repositorio
 
 ```text
 📦 gesture-sheep-Cart
@@ -89,7 +89,7 @@ El sensor lee los ejes de inclinación y los traduce a los siguientes comandos d
  ┗ 📜 requirements.txt             # Dependencias de de Python para los tests
 ```
 
-## 🚀 Guía de Instalación y Uso
+## Guía de Instalación y Uso
 ### 1. Preparar el Entorno de Análisis (Opcional)
 Si deseas ejecutar los modelos computacionales en Python, instala las dependencias:
 Bash
@@ -117,7 +117,7 @@ o	`IN2 = D2`
 o	`IN3 = D3`
 o	`IN4 = D4`
 3.	Sube el firmware a la placa del vehículo.
-📊 Análisis y Gráficas de Rendimiento
+## Análisis y Gráficas de Rendimiento
 Puedes evaluar y visualizar la eficacia arquitectónica del código optimizado frente a un algoritmo tradicional corriendo los scripts de prueba ubicados en la carpeta `/test`:
 ```Bash
 # Genera la comparativa de carga en el bus I2C
